@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!-- Map server -->
+  <arg name="map_file" default="$(find udacity_bot)/maps/jackal_race.yaml"/>
+  <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
+
+  <!-- Localization-->
+  <node pkg="amcl" type="amcl" name="amcl" output="screen">
+    <remap from="scan" to="udacity_bot/laser/scan"/>
+    <param name="odom_frame_id" value="odom"/>
+    <param name="odom_model_type" value="diff-corrected"/>
+    <param name="base_frame_id" value="robot_footprint"/>
+    <param name="global_frame_id" value="map"/>
+    <param name="transform_tolerance" value="0.3"/> 
+    <param name="initial_pose" value="0 0 0 0 0 0"/>
+    <param name="controller_frequency" value="4.0"/>
+    <param name="min_particles" value="200"/>
+    <param name="max_particles" value="5000"/> 
+
+    <!-- Overall filter parameters-->
+
+    <param name="update_min_d" value="0.1"/>
+    <param name="update_min_a" value="0.1"/><!-- "π/8.0 radians" -->
+    <param name="resample_interval" value="2"/> <!-- 2 -->
+    <param name="recovery_alpha_slow" value="0.0"/>
+    <param name="recovery_alpha_fast" value="0.0"/>
+    <param name="gui_publish_rate" value="4.0"/> <!-- "-1.0 Hz" -->
+    <param name="use_map_topic" value="true"/> <!-- false -->
+    <param name="first_map_only" value="false"/>
+
+
+    <param name="laser_min_range" value="-1.0"/> <!-- -1.0 -->
+    <param name="laser_max_range" value="-1.0"/>
+    <param name="laser_max_beams" value="30"/> <!-- 30 -->
+    <param name="laser_z_hit" value="0.95"/>  <!-- 0.95 -->
+    <param name="laser_z_rand" value="0.05"/>   <!-- 0.05 -->
+    <param name="laser_lambda_short" value="0.1"/>
+    <param name="laser_model_type" value="likelihood_field"/> <!-- likelihood_field -->
+
+
+
+    <param name="odom_alpha1" value="0.0"/> 
+        <!-- Specifies the expected noise in odometrys rotation estimate from the rotational component of the robots motion.  -->
+    <param name="odom_alpha2" value="0.0"/>
+        <!-- Specifies the expected noise in odometry's rotation estimate from translational component of the robots motion.  -->
+    <param name="odom_alpha3" value="0.0"/>
+        <!-- Specifies the expected noise in odometry's translation estimate from the translational component of the robot's motion.  -->
+    <param name="odom_alpha4" value="0.0"/>
+        <!-- Specifies the expected noise in odometry's translation estimate from the rotational component of the robot's motion.  -->
+    <param name="odom_alpha5" value="0.0"/>
+        <!-- Translation-related noise parameter (only used if model is "omni"). --> 
+
+
+    <param name="tf_broadcast" value="true"/>
+        <!-- Set this to false to prevent amcl from publishing the transform between the global frame and the odometry frame.  -->
+
+      
+   </node>
+
+  <!-- Move base -->
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    <rosparam file="$(find udacity_bot)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find udacity_bot)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find udacity_bot)/config/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find udacity_bot)/config/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find udacity_bot)/config/base_local_planner_params.yaml" command="load" />
+
+    <remap from="cmd_vel" to="cmd_vel"/>
+    <remap from="odom" to="odom"/>
+    <remap from="scan" to="udacity_bot/laser/scan"/>
+    <!-- <remap from="initialpose" to="move_base/initialpose"/> -->
+
+    <param name="base_global_planner" type="string" value="navfn/NavfnROS" />
+    <param name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS"/>
+    <param name="recovery_behavior_enabled" value="true"/>
+    
+
+  </node>
+
+
+</launch>

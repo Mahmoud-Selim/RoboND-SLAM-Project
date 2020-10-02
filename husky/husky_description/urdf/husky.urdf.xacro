@@ -232,7 +232,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
     </plugin>
   </gazebo>
 
-  <gazebo reference="camera_link">
+  <gazebo reference="camera">
     <sensor type="depth" name="camera1">
         <always_on>1</always_on>
         <update_rate>20.0</update_rate>
@@ -256,12 +256,12 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
              <alwaysOn>true</alwaysOn>
                 <updateRate>10.0</updateRate>
                 <cameraName>camera</cameraName>
-                <frameName>camera_rgbd_frame</frameName>                   
-            <imageTopicName>rgb/image_raw</imageTopicName>
-            <depthImageTopicName>depth/image_raw</depthImageTopicName>
-            <pointCloudTopicName>depth/points</pointCloudTopicName>
-            <cameraInfoTopicName>rgb/camera_info</cameraInfoTopicName>              
-            <depthImageCameraInfoTopicName>depth/camera_info</depthImageCameraInfoTopicName>            
+                <frameName>base_link</frameName>                   
+            <imageTopicName>/camera/rgb/image_raw</imageTopicName>
+            <depthImageTopicName>/camera/depth/image_raw</depthImageTopicName>
+            <pointCloudTopicName>/camera/depth/points</pointCloudTopicName>
+            <cameraInfoTopicName>/camera/rgb/camera_info</cameraInfoTopicName>              
+            <depthImageCameraInfoTopicName>/camera/depth/camera_info</depthImageCameraInfoTopicName>            
             <pointCloudCutoff>0.4</pointCloudCutoff>                
                 <hackBaseline>0.07</hackBaseline>
                 <distortionK1>0.0</distortionK1>

@@ -82,7 +82,10 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
               -unpause
               -urdf
               -param robot_description
-              -model $(arg robot_namespace)" />
+              -model $(arg robot_namespace)" >
+              
+    <remap from="/husky_velocity_controller/odom" to="/odom"/>
+    </node>
 
   </group>
 

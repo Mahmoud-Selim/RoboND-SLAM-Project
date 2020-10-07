@@ -1,6 +1,5 @@
 %% V1.0
-%% by Gabriel Garcia, gabrcg@gmail.com
-%% This is a template for Udacity projects using IEEEtran.cls
+%% by Mahmoud Selim, mahmoudahmedselim96@gmail.com
 
 %% Be Udacious!
 
@@ -17,7 +16,7 @@
 
 \author{Mahmoud Selim}
 
-\markboth{SLAM project, Robotic Nanodegree, Udacity, RTAB-Mapping, Robotics}%
+\markboth{SLAM project, Robotic Nanodegree, Udacity, RTAB\_Mapping, Robotics}%
 {}
 \IEEEtitleabstractindextext{%
 
@@ -26,7 +25,7 @@ In Robotics, localization and mapping are the key skills that enable robots to i
 to locate itself relative to the map of previously visited locations. Mapping a location (e.g. an apartment room or an outdoor area) from
 sensor data while locating oneself in that consistently updating environment is referred to as Simultaneous Localization And Mapping
 (SLAM). In this project the SLAM implementation of Real-Time Appearance Based Mapping (RTABMap) is done through the
-rtabmap_ros package and implemented on a teleoperated robot to map 2 simulated worlds made in Gazebo. Both worlds were
+rtabmap\_ros package and implemented on a teleoperated robot to map 2 simulated worlds made in Gazebo. Both worlds were
 successfully mapped, which allows for a first look at some considerations to be made when attempting to map an environment using
 robots.
 \end{abstract}
@@ -78,16 +77,16 @@ and mapping requires the location of the robot.
 \subsection{SLAM}
 Simultaneous Localization and Mapping (SLAM) solves this
 problem by simultaneously and iteratively computing the
-map (m) and robot’s pose (x_t) from sensory and odometric measurements (z_t), control actions (u_t), and correspondences (c_t) between features within the map. There are two
+map (m) and robot’s pose (x\_t) from sensory and odometric measurements (z\_t), control actions (u\_t), and correspondences (c\_t) between features within the map. There are two
 different variants of SLAM:
 \begin{itemize}
 \item Online SLAM: it solves the SLAM problem by only
 looking at the current pose and local correspondences to estimate the robot’s pose and update the
-map: P(x_t, m, c_t|u_{1:t}, z_{1:t}).
+map: P(x\_t, m, c\_t|u\_{1:t}, z\_{1:t}).
 \item Full SLAM: Unlike the Online SLAM, Full SLAM,
 also referred to Offline SLAM, takes into account all
 poses and map correspondences to estimate the pose
-and update the map: P(x_{1:t}, m, c_{1:t}|u_{1:t}, z_{1:t}).
+and update the map: P(x\_{1:t}, m, c\_{1:t}|u\_{1:t}, z\_{1:t}).
 \end {itemize}
 There exist different implementations of the SLAM algorithm, examples for these might be FastSLAM, Grid-Based
 SLAM, and Graph SLAM.
@@ -116,7 +115,7 @@ and the 2D/3D mapping.
 
 \begin{figure}[thpb]
       \centering
-      \includegraphics[width=\linewidth]{graph_slam5}
+      \includegraphics[width=\linewidth]{graph_slam}
       \caption{Graph SLAM Nodes.}
       \label{fig: Graph SLAM}
 \end{figure}
@@ -176,92 +175,147 @@ WM.
 
 \section{SCENE AND MODEL CONFIGURATION}
 \subsubsection{Robot Configuration}
-RTABMap uses a memory management technique to limit
-the number of locations considered as candidates during
-loop-closure detection, which allows it to be done in RealTime. The technique can be summarized as follows: it
-keeps the most frequently observed locations in the robot’s
-working memory (WM) and transfers other images to the
-long term memory (LTM). When an image is first acquired
-a new node is created in the short term memory (STM),
-features are then extracted and a it is then compared to the
-vocabulary to find all of the words in the image, creating
-a bag-of-word for this node. Nodes are assigned a weight
-in the STM based on how long the robot spent in the location, the longer, the higher the weight. STM has a fixed
-size S, when the STM reaches S nodes the oldest node is
-transferred to the WM to be considered for loop closure
-detection. WM size depends on a fixed time T, and when
-the time required to process new data reaches T, then some
-nodes are transferred to the LTM. Finally if a loop closure is
-detected, neighbour nodes in the LTM are transferred to the
-WM.
+The robot created is a race car. It was created by using the udacity bot and then by
+adding front portion, a driver seat and a rear wing. The front wheels are simplified while
+the back wheels are preserved. The laser sensor was placed on top of the driver seat, while
+the camera is moved to the front of the car.
 \begin{figure}[thpb]
       \centering
-      \includegraphics[width=\linewidth]{memory_management}
-      \caption{ RTAB-MAP Memory Management}
-      \label{fig:rtab_mem_mgmt}
+      \includegraphics[width=\linewidth]{race car}
+      \caption{race car.}
+\end{figure}
+\begin{figure}[thpb]
+      \centering
+      \includegraphics[width=\linewidth]{race car}
+      \caption{race car tf frames.}
+\end{figure}
+
+\subsubsection{World Configuration}
+\subsubsection {Kitchen Dining - Udacity World}
+Mapping was done on two different worlds, first the
+’kitchen and dining’ world provided by Udacity. There are
+two small rooms, the kitchen with a table in the center and
+a second smaller room.
+\begin{figure}[thpb]
+      \centering
+      \includegraphics[width=\linewidth]{kitchen_dining}
+      \caption{Kitchen Dining World}
+\end{figure}
+
+\subsubsection {Warehouse - My World}
+The second world is a warehouse. It's like a large area square with many items and products in it. Mapping was done successfully and the 3D map did have the products in it successfully.
+\begin{figure}[thpb]
+      \centering
+      \includegraphics[width=\linewidth]{my_world}
+      \caption{Kitchen Dining World}
+\end{figure}
+
+\section {Results}
+\subsubsection {Mapping Kitchen and dining}
+While mapping the kitchen and dining world, the robot
+was able to map out the whole area with ease compared to
+the second world, the smaller size of the environment and
+its ample amount of features allowed RTABMap to detect
+enough features after 2 cycles around the rooms to complete
+the map. Bumping into walls or doing to many maneuvers
+to unstuck the robot led to slight variations (objects not
+appearing where they should be) in the map, but after a
+few cycles the map corrected and realigned itself without
+issues.
+Global local closures were detected
+during the mapping which was enough to fully map out
+this environment.
+\begin{figure}[thpb]
+      \centering
+      \includegraphics[width=\linewidth]{provided_world_partial_map}
+      \caption{the map while mapping}
+\end{figure}
+
+\begin{figure}[thpb]
+      \centering
+      \includegraphics[width=\linewidth]{provided_world_full_map}
+      \caption{the map after mapping.}
 \end{figure}
 
 
 
-\subsubsection{}
-Subsubsection text here.
+
+\begin{figure}[thpb]
+      \centering
+      \includegraphics[width=\linewidth]{provided_world_3D_map}
+      \caption{3D Map}
+\end{figure}
+
+\begin{figure}[thpb]
+      \centering
+      \includegraphics[width=\linewidth]{provided_world_2D_map}
+      \caption{2D Map}
+\end{figure}
 
 
-\begin{table}[h]
-\caption{Table}
-\label{table_example}
-\begin{center}
-\begin{tabular}{|c||c|}
-\hline
-One & Two\\
-\hline
-Three & Four\\
-\hline
-\end{tabular}
-\end{center}
-\end{table}
+\subsubsection {Mapping the warehouse (custom world)}
+Same as before. the warehouse was mapped using the same algorithm with the same parameters. The robot did map the environment well. Figures of the mapped environment is shown below.
+\begin{figure}[thpb]
+      \centering
+      \includegraphics[width=\linewidth]{warehouse_world_partial_map}
+      \caption{the map while mapping}
+\end{figure}
 
-
-
-   
-
-\section{Background / Formulation}
-At this stage, you should begin diving into the technical details of your approach by explaining to the reader how parameters were defined, what type of network was chosen, and the reasons these items were performed. This should be factual and authoritative, meaning you should not use language such as “I think this will work” or “Maybe a network with this architecture is better..”. Instead, focus on items similar to, ”A 3-layer network architecture was chosen with X, Y, and Z parameters” 
-Explain why you chose the network you did for the supplied data set and then why you chose the network used for your robotic inference project. \cite{lamport1994latex}
-
-%example for Bullet point list
-
-\begin{itemize}
-\item example
-\end {itemize}
+\begin{figure}[thpb]
+      \centering
+      \includegraphics[width=\linewidth]{warehouse_world_2}
+      \caption{the map while mapping.}
+\end{figure}
 
 
 
-%example for numbered list
-\begin{enumerate}
-\item example
 
-\end{enumerate}
+\begin{figure}[thpb]
+      \centering
+      \includegraphics[width=\linewidth]{warehouse_world_full_map}
+      \caption{the map after mapping.}
+\end{figure}
 
-\section{Data Acquisition}
-This section should discuss the data set. Items to include are the number of images, size of the images, the types of images (RGB, Grayscale, etc.), how these images were collected (including the method). Providing this information is critical if anyone would like to replicate your results. After all, the intent of reports such as these are to convey information and build upon ideas so you want to ensure others can validate your process.
-Justifying why you gathered data in this way is a helpful point, but sometimes this may be omitted here if the problem has been stated clearly in the introduction.
-It is a great idea here to have at least one or two images showing what your data looks like for the reader to visualize.
-
-\section{Results}
-This is typically the hardest part of the report for many. You want to convey your results in an unbiased fashion. If you results are good, you can objectively note this. Similarly, you may do this if they are bad as well. You do not want to justify your results here with discussion; this is a topic for the next session. 
-Present the results of your robotics project model and the model you used for the supplied data with the appropriate accuracy and inference time
-For demonstrating your results, it is incredibly useful to have some charts, tables, and/or graphs for the reader to review. This makes ingesting the information quicker and easier.
 
 \section{Discussion}
-This is the only section of the report where you may include your opinion. However, make sure your opinion is based on facts. If your results are poor, make mention of what may be the underlying issues. If the results are good, why do you think this is the case? Again, avoid writing in the first person (i.e. Do not use words like “I” or “me”). If you really find yourself struggling to avoid the word “I” or “me”; sometimes, this can be avoid with the use of the word “one”. As an example: instead of : “I think the accuracy on my dataset is low because the images are too small to show the necessary detail” try: “one may believe the accuracy on the dataset is low because the images are too small to show the necessary detail”. They say the same thing, but the second avoids the first person. 
-Reflect on which is more important, inference time or accuracy, in regards to your robotic inference project.
+Mapping the two worlds raised a number of issues one
+would have to consider when attempting to map environments. The first being that the robot used to do the
+mapping needs to be tailored to the environment, from
+its ability to navigate through the map, its speed and the
+sensors used. Considering that both worlds were mapped
+successfully, despite the issues with the robot, RTABMap
+is able to recover, and can therefore be used in mapping
+environments with less than ideal robots. However the
+size (of the environment that is to be mapped compared
+to the perceptual range of the robot), noise in perception and actuation, perceptual ambiguity (how similar different
+places are, the more simlar different places can be, the higher
+the perceptual ambiguity), and cycles can affect the robots
+ability to map an environment without accumulating errors
+past a certain threshold where the map would be unusable.
+The size, could potentially be solved by either increasing
+the number of robots or increasing the sensor’s range, or
+both. For the noise in perception one could either improve the quality of the sensor or deepen the range of the
+perceived by adding new types of sensors, for the noise
+in actuation, then using rtabmap’s ability to get visual
+odometry, which can be fused with the robot’s odometry
+to improve the accuracy and therefore reduce the noise in
+actuation. Perceptual ambiguity and cycles depend on the
+map but their effects could be reduced by further tuning the
+rtabmap’s parameters
 
 \section{Conclusion / Future work}
-This section is intended to summarize your report. Your summary should include a recap of the results, did this project achieve what you attempted, and is this a commercially viable product? 
-For Future work,address areas of work that you may not have addressed in your report as possible next steps. For future work, this could be due to time constraints, lack of currently developed methods / technology, and areas of application outside of your current implementation. Again, avoid the use of the first-person.
+Given the insightful results, RTABMap could be used on
+robots to map any environments, and while more experimentations need to be done with regards to the way it
+would interact with dynamic environments for instance, it
+is safe to say that it is possible to use RTABMap to map real
+environments using a laser scanner on a robot.
+Future works would require upgrades on the robot,
+switching to a 4-wheel based configuration will help with
+the stability issues, and adding a pivot on the laser scanner
+would reduce the number of maneuvers needed to fully
+map out certain areas as stated previously. 
 
 \bibliography{bib}
-\bibliographystyle{ieeetr}
+%\bibliographystyle{ieeetr}
 
 \end{document}
